@@ -1,1 +1,1 @@
-# discuz_redis_ssrf_exec
+# Discuz!利用SSRF+Redis缓存应用导致有条件代码执行
