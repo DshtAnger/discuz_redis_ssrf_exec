@@ -101,6 +101,7 @@ pocsuite -r discuz_redis_ssrf_exec.py -u "http://127.0.0.1:8888/discuz/ssrf_goph
 ## 0x03参考
 * [pocsuite](http://pocsuite.org/)
 * [PoC编写规范及要求说明](https://github.com/knownsec/Pocsuite/blob/master/docs/CODING.md)
+* [Seebug/ssvid-91879](https://www.seebug.org/vuldb/ssvid-91879)
 * [imp0wd3r](https://github.com/imp0wd3r)
 * [C1tas](https://github.com/C1tas)
 * [漏洞检测的那些事儿](http://drops.wooyun.org/tips/16431)
