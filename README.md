@@ -54,3 +54,16 @@ docker pull redis
 ```
 gzip -dc discuz.tar.gz | docker load
 ```
+###运行镜像
+```
+docker run --name dz-mysql -e MYSQL_ROOT_PASSWORD=root -d mysql
+
+docker run --name dz-redis -d redis
+
+docker run --name dz-ssrf --link dz-mysql:mysql -p 8888:80 -d dz-redis-init apache2 "-DFOREGROUND"
+```
+访问127.0.0.1:8888进行Discuz!的安装
+
+安装过后将config/config_global.php中redis的地址和端口改为redis容器的地址和端口（可用docker inspect dz-redis查看IP）
+
+在后台中 全局 -> 性能优化 -> 内存优化 中查看redis是否被启用，若已启用则搭建完成。
