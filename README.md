@@ -45,7 +45,7 @@ $redis->set("kQbXlj_setting",$setting);
 docker pull mysql
 docker pull redis
 ```
-鉴于国外源的镜像仓库速度缓慢且有时容易中断无响应，建立通过[DaoCloud](https://www.daocloud.io/)拉取镜像
+鉴于国外源的镜像仓库速度缓慢且有时容易中断无响应，建议通过[DaoCloud](https://www.daocloud.io/)拉取镜像
 
 [安装过phpredis的Discuz!下载地址](http://pan.baidu.com/s/1nvGm46d)
 
@@ -62,8 +62,34 @@ docker run --name dz-redis -d redis
 
 docker run --name dz-ssrf --link dz-mysql:mysql -p 8888:80 -d dz-redis-init apache2 "-DFOREGROUND"
 ```
-访问127.0.0.1:8888进行Discuz!的安装
+访问127.0.0.1:8888进行Discuz!的安装.
 
-安装过后将config/config_global.php中redis的地址和端口改为redis容器的地址和端口（可用docker inspect dz-redis查看IP）
+安装过后将config/config_global.php中redis的地址和端口改为redis容器的地址和端口（可用docker inspect dz-redis查看IP）.
 
-在后台中 全局 -> 性能优化 -> 内存优化 中查看redis是否被启用，若已启用则搭建完成。
+在后台中 全局 -> 性能优化 -> 内存优化 中查看redis是否被启用，若已启用则搭建完成.
+
+## 0x02漏洞验证
+在/discuz根目录下放置了ssrf_gopher.php用于构造ssrf.内容如下:
+```
+<?php
+$ch = curl_init();
+$url = $_GET['ssrf'];
+echo $url.'<br/>';
+
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+
+$output = curl_exec($ch);
+curl_close($ch);
+print_r($output);
+?>
+```
+验证：
+```
+pocsuite -r discuz_redis_ssrf_exec.py -u "http://127.0.0.1:8888/discuz/ssrf_gopher.php?ssrf=" --verify
+```
+攻击：
+```
+pocsuite -r discuz_redis_ssrf_exec.py -u "http://127.0.0.1:8888/discuz/ssrf_gopher.php?ssrf=" --attack
+```
