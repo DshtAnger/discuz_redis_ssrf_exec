@@ -48,7 +48,9 @@ docker pull redis
 鉴于国外源的镜像仓库速度缓慢且有时容易中断无响应，建立通过[DaoCloud](https://www.daocloud.io/)拉取镜像
 
 [安装过phpredis的Discuz!下载地址](http://pan.baidu.com/s/1nvGm46d)
+
 从discuz.tar.gz恢复出Discuz!镜像：
+
 ```
 gzip -dc discuz.tar.gz | docker load
 ```
