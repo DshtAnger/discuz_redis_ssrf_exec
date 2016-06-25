@@ -39,7 +39,7 @@ $redis->set("kQbXlj_setting",$setting);
 ```
 ## 0x01环境搭建
 ###获取镜像
-环境搭建共使用三个镜像：MySQL、Redis和安装过phpredis的Discuz!
+环境搭建共使用三个镜像：MySQL、Redis和安装过phpredis的Discuz!  
 其中MySQL和Redis的镜像可用以下命令从官方获取：
 ```
 docker pull mysql
