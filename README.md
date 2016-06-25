@@ -55,6 +55,7 @@ docker pull redis
 gzip -dc discuz.tar.gz | docker load
 ```
 ###运行镜像
+Kali(Debian) + Docker(mysql + redis + discuz)
 ```
 docker run --name dz-mysql -e MYSQL_ROOT_PASSWORD=root -d mysql
 
